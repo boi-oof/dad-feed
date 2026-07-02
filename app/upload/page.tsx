@@ -52,26 +52,56 @@ export default function UploadPage() {
     setError("");
     setSubmitting(true);
 
-    const formData = new FormData();
-    formData.append("photo", file);
-    formData.append("caption", caption);
-    formData.append("tags", tags.join(","));
+    try {
+      // 1. Ask our server for a signed upload URL (this checks Dad is logged in).
+      const urlRes = await fetch("/api/upload-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ filename: file.name }),
+      });
+      if (!urlRes.ok) {
+        const data = await urlRes.json().catch(() => ({}));
+        throw new Error(data.error || "Couldn't prepare the upload.");
+      }
+      const { path, token } = await urlRes.json();
 
-    const res = await fetch("/api/posts", { method: "POST", body: formData });
-    setSubmitting(false);
+      // 2. Upload the photo straight to Supabase Storage from the browser.
+      //    This skips Vercel's function size limit entirely, so full-size
+      //    phone photos work fine.
+      const { getPublicClient } = await import("@/lib/supabase");
+      const supabase = getPublicClient();
+      const { error: uploadError } = await supabase.storage
+        .from("photos")
+        .uploadToSignedUrl(path, token, file);
+      if (uploadError) throw uploadError;
 
-    if (!res.ok) {
-      const data = await res.json();
-      setError(data.error || "Upload failed — try again.");
-      return;
+      // 3. Tell our server the upload is done so it can save the post
+      //    (caption, tags, and the server-stamped timestamp).
+      const postRes = await fetch("/api/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path, caption, tags }),
+      });
+      if (!postRes.ok) {
+        const data = await postRes.json().catch(() => ({}));
+        throw new Error(data.error || "Couldn't save the post.");
+      }
+
+      setSuccess(true);
+      setFile(null);
+      setPreview(null);
+      setCaption("");
+      setTags([]);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong — check your connection and try again."
+      );
+    } finally {
+      setSubmitting(false);
     }
-
-    setSuccess(true);
-    setFile(null);
-    setPreview(null);
-    setCaption("");
-    setTags([]);
-    if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
   async function handleLogout() {

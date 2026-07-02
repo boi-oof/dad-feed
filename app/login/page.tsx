@@ -15,21 +15,25 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
 
-    setLoading(false);
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error || "Something went wrong.");
+        return;
+      }
 
-    if (!res.ok) {
-      const data = await res.json();
-      setError(data.error || "Something went wrong.");
-      return;
+      router.push("/upload");
+    } catch {
+      setError("Couldn't reach the server — check your connection and try again.");
+    } finally {
+      setLoading(false);
     }
-
-    router.push("/upload");
   }
 
   return (

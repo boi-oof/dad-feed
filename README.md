@@ -50,7 +50,7 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhY
 
 DAD_PASSWORD=jaya2611
 
-SESSION_SECRET= 986712e5df0ca34b
+SESSION_SECRET=86a252ec6227c7145e38eb4450597d4b8726b2dd7e14e69f4fdd2dc41687515a
 ```
 
 ## 3. Run it locally (optional, to try it before deploying)

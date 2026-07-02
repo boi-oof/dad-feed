@@ -16,11 +16,13 @@ create policy "Public can read posts"
   on posts for select
   using (true);
 
--- Storage bucket for photos (public read, no public write policy needed
--- since uploads go through the server with the service role key).
-insert into storage.buckets (id, name, public)
-values ('photos', 'photos', true)
-on conflict (id) do nothing;
+-- Storage bucket for photos (public read, 25MB per file — plenty for
+-- full-size phone photos). Uploads go through a signed URL your server
+-- issues after checking Dad is logged in, so no public write policy
+-- is needed.
+insert into storage.buckets (id, name, public, file_size_limit)
+values ('photos', 'photos', true, 26214400)
+on conflict (id) do update set file_size_limit = 26214400;
 
 create policy "Public can view photos"
   on storage.objects for select
