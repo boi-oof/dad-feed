@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import type { Post } from "@/lib/supabase";
 import PostCard from "@/components/PostCard";
-import Bubbles from "@/components/Bubbles";
+import Wash from "@/components/Wash";
 
 export default function FeedPage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -28,33 +28,33 @@ export default function FeedPage() {
 
   return (
     <div className="flex-1 relative">
-      <Bubbles />
+      <Wash />
 
-      <header className="max-w-5xl mx-auto px-5 pt-10 pb-4 flex items-start justify-between gap-4">
+      <header className="max-w-6xl mx-auto px-6 sm:px-10 pt-14 pb-6 flex items-start justify-between gap-6 border-b border-sea-green/15">
         <div>
-          <h1 className="display text-4xl sm:text-5xl text-turquoise-dark drop-shadow-sm">
-            Dad&apos;s Feed 🌊
-          </h1>
-          <p className="text-teal-ink/70 font-semibold mt-1">
-            Every photo, straight from him.
+          <p className="text-[11px] tracking-[0.22em] uppercase text-sea-green font-medium mb-2">
+            A running record
           </p>
+          <h1 className="display text-4xl sm:text-5xl text-sea-blue-deep italic">
+            Dad&apos;s Feed
+          </h1>
         </div>
         <Link
           href="/login"
-          className="shrink-0 hover-wiggle inline-flex items-center gap-1.5 bg-white text-turquoise-dark font-bold px-4 py-2 rounded-full shadow-sm border-2 border-turquoise/20 text-sm mt-1"
+          className="shrink-0 mt-1 text-[11px] tracking-[0.14em] uppercase font-medium text-sea-blue border border-sea-blue/25 px-4 py-2.5 rounded-full hover:bg-sea-blue hover:text-paper hover:border-sea-blue transition-colors"
         >
-          Dad&apos;s login
+          Dad&apos;s Login
         </Link>
       </header>
 
       {allTags.length > 0 && (
-        <div className="max-w-5xl mx-auto px-5 pb-4 flex flex-wrap gap-2">
+        <div className="max-w-6xl mx-auto px-6 sm:px-10 py-4 flex flex-wrap items-center gap-x-4 gap-y-2">
           <button
             onClick={() => setActiveTag(null)}
-            className={`text-xs font-bold px-3 py-1.5 rounded-full transition-colors ${
+            className={`text-[11px] tracking-[0.1em] uppercase font-medium transition-colors ${
               activeTag === null
-                ? "bg-turquoise text-white"
-                : "bg-white text-turquoise-dark border border-turquoise/20"
+                ? "text-sea-blue-deep"
+                : "text-ink/40 hover:text-sea-blue"
             }`}
           >
             All
@@ -63,39 +63,36 @@ export default function FeedPage() {
             <button
               key={tag}
               onClick={() => setActiveTag(tag)}
-              className={`text-xs font-bold px-3 py-1.5 rounded-full transition-colors ${
+              className={`text-[11px] tracking-[0.1em] uppercase font-medium transition-colors ${
                 activeTag === tag
-                  ? "bg-coral text-white"
-                  : "bg-white text-turquoise-dark border border-turquoise/20"
+                  ? "text-sea-blue-deep"
+                  : "text-ink/40 hover:text-sea-blue"
               }`}
             >
-              #{tag}
+              {tag}
             </button>
           ))}
         </div>
       )}
 
-      <main className="max-w-5xl mx-auto px-5 pb-16">
+      <main className="max-w-6xl mx-auto px-6 sm:px-10 pb-20 pt-2">
         {loading ? (
-          <p className="text-center text-teal-ink/60 font-semibold py-16">
+          <p className="text-center text-ink/50 font-medium py-20 tracking-wide">
             Loading photos…
           </p>
         ) : posts.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-2xl display text-turquoise-dark">No photos yet!</p>
-            <p className="text-teal-ink/60 font-semibold mt-2">
-              Once Dad uploads something, it&apos;ll show up right here.
+          <div className="text-center py-24">
+            <p className="display italic text-3xl text-sea-blue-deep">
+              Nothing here yet
+            </p>
+            <p className="text-ink/50 font-medium mt-2">
+              Once Dad posts something, it&apos;ll appear right here.
             </p>
           </div>
         ) : (
-          <div className="columns-1 sm:columns-2 lg:columns-3 gap-6">
-            {posts.map((post, i) => (
-              <PostCard
-                key={post.id}
-                post={post}
-                rotation={(i % 2 === 0 ? 1 : -1) * (3 + (i % 3))}
-                onTagClick={setActiveTag}
-              />
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-4">
+            {posts.map((post) => (
+              <PostCard key={post.id} post={post} onTagClick={setActiveTag} />
             ))}
           </div>
         )}

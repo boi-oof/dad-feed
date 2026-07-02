@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import Bubbles from "@/components/Bubbles";
+import Wash from "@/components/Wash";
 
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -53,7 +53,6 @@ export default function UploadPage() {
     setSubmitting(true);
 
     try {
-      // 1. Ask our server for a signed upload URL (this checks Dad is logged in).
       const urlRes = await fetch("/api/upload-url", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -65,9 +64,6 @@ export default function UploadPage() {
       }
       const { path, token } = await urlRes.json();
 
-      // 2. Upload the photo straight to Supabase Storage from the browser.
-      //    This skips Vercel's function size limit entirely, so full-size
-      //    phone photos work fine.
       const { getPublicClient } = await import("@/lib/supabase");
       const supabase = getPublicClient();
       const { error: uploadError } = await supabase.storage
@@ -75,8 +71,6 @@ export default function UploadPage() {
         .uploadToSignedUrl(path, token, file);
       if (uploadError) throw uploadError;
 
-      // 3. Tell our server the upload is done so it can save the post
-      //    (caption, tags, and the server-stamped timestamp).
       const postRes = await fetch("/api/posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -111,44 +105,50 @@ export default function UploadPage() {
 
   return (
     <div className="flex-1 relative">
-      <Bubbles />
+      <Wash />
 
-      <header className="max-w-lg mx-auto px-5 pt-8 pb-2 flex items-center justify-between">
-        <h1 className="display text-3xl text-turquoise-dark">New photo 🐬</h1>
-        <div className="flex items-center gap-2">
+      <header className="max-w-lg mx-auto px-6 pt-10 pb-4 flex items-center justify-between">
+        <div>
+          <p className="text-[11px] tracking-[0.22em] uppercase text-sea-green font-medium mb-1">
+            New entry
+          </p>
+          <h1 className="display italic text-3xl text-sea-blue-deep">Add a photo</h1>
+        </div>
+        <div className="flex items-center gap-2 mt-6">
           <a
             href="/"
-            className="text-xs font-bold px-3 py-1.5 rounded-full bg-white text-turquoise-dark border border-turquoise/20"
+            className="text-[11px] tracking-[0.1em] uppercase font-medium text-sea-blue border border-sea-blue/25 px-3 py-1.5 rounded-full hover:bg-sea-blue hover:text-paper transition-colors"
           >
-            View feed
+            Feed
           </a>
           <button
             onClick={handleLogout}
-            className="text-xs font-bold px-3 py-1.5 rounded-full bg-white text-coral border border-coral/20"
+            className="text-[11px] tracking-[0.1em] uppercase font-medium text-ink/50 border border-ink/15 px-3 py-1.5 rounded-full hover:border-ink/30 transition-colors"
           >
             Log out
           </button>
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-5 pb-16 pt-4">
+      <main className="max-w-lg mx-auto px-6 pb-16 pt-4">
         <form
           onSubmit={handleSubmit}
-          className="animate-pop-in bg-white rounded-3xl shadow-[0_12px_32px_-8px_rgba(15,61,58,0.3)] border-4 border-white p-6"
+          className="animate-fade-up bg-paper rounded-lg border border-sea-green/15 shadow-[0_1px_3px_rgba(20,47,61,0.08)] p-6"
         >
-          {/* Photo picker */}
           <label
             htmlFor="photo-input"
-            className="block rounded-2xl border-4 border-dashed border-turquoise/30 bg-foam overflow-hidden cursor-pointer relative"
+            className="block rounded-md border border-sea-green/20 bg-ivory overflow-hidden cursor-pointer relative"
             style={{ aspectRatio: preview ? "auto" : "4/3" }}
           >
             {preview ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={preview} alt="Preview" className="w-full h-auto" />
             ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-turquoise-dark py-10">
-                <span className="text-4xl">📷</span>
-                <span className="font-bold">Tap to take or choose a photo</span>
+              <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-sea-blue py-10">
+                <span className="text-3xl">＋</span>
+                <span className="text-[11px] tracking-[0.12em] uppercase font-medium">
+                  Tap to take or choose a photo
+                </span>
               </div>
             )}
           </label>
@@ -162,28 +162,26 @@ export default function UploadPage() {
             className="hidden"
           />
 
-          {/* Caption */}
           <textarea
             value={caption}
             onChange={(e) => setCaption(e.target.value)}
             placeholder="Quick caption…"
             rows={2}
-            className="w-full mt-4 bg-foam border-2 border-turquoise/20 rounded-2xl px-4 py-3 font-semibold text-teal-ink placeholder:text-teal-ink/30 focus:outline-none focus:border-turquoise transition-colors resize-none"
+            className="w-full mt-4 bg-ivory border border-sea-green/20 rounded-md px-4 py-3 font-medium text-ink placeholder:text-ink/30 focus:outline-none focus:border-sea-green transition-colors resize-none display italic text-[17px]"
           />
 
-          {/* Tags */}
           <div className="mt-3">
-            <div className="flex flex-wrap gap-1.5 mb-2">
+            <div className="flex flex-wrap gap-x-3 gap-y-1.5 mb-2">
               {tags.map((t) => (
                 <span
                   key={t}
-                  className="flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-turquoise/10 text-turquoise-dark"
+                  className="flex items-center gap-1 text-[11px] tracking-[0.08em] uppercase font-medium text-sea-green"
                 >
-                  #{t}
+                  {t}
                   <button
                     type="button"
                     onClick={() => removeTag(t)}
-                    className="text-turquoise-dark/60 hover:text-coral"
+                    className="text-sea-green/50 hover:text-sea-blue-deep"
                     aria-label={`Remove tag ${t}`}
                   >
                     ×
@@ -197,29 +195,31 @@ export default function UploadPage() {
               onKeyDown={handleTagKeyDown}
               onBlur={addTag}
               placeholder="Add a tag and hit enter (e.g. family, garden)"
-              className="w-full bg-foam border-2 border-turquoise/20 rounded-2xl px-4 py-2.5 text-sm font-semibold text-teal-ink placeholder:text-teal-ink/30 focus:outline-none focus:border-turquoise transition-colors"
+              className="w-full bg-ivory border border-sea-green/20 rounded-md px-4 py-2.5 text-sm font-medium text-ink placeholder:text-ink/30 focus:outline-none focus:border-sea-green transition-colors"
             />
           </div>
 
-          <p className="text-xs text-teal-ink/40 font-semibold mt-3 text-center">
-            The date and time stamp on the photo when you hit post.
+          <p className="text-[11px] tracking-[0.08em] uppercase text-ink/35 font-medium mt-4 text-center">
+            The date and time stamp automatically when you post
           </p>
 
           {error && (
-            <p className="text-coral font-bold text-sm mt-2 text-center">{error}</p>
+            <p className="text-[13px] text-sea-blue-deep font-medium mt-2 text-center">
+              {error}
+            </p>
           )}
           {success && (
-            <p className="text-turquoise-dark font-bold text-sm mt-2 text-center">
-              Posted! It&apos;s live on the feed. 🎉
+            <p className="text-[13px] text-sea-green font-medium mt-2 text-center">
+              Posted — it&apos;s live on the feed.
             </p>
           )}
 
           <button
             type="submit"
             disabled={submitting || !file}
-            className="hover-wiggle mt-5 w-full bg-coral text-white font-bold py-3 rounded-2xl shadow-md disabled:opacity-50 transition-opacity"
+            className="mt-6 w-full bg-sea-blue-deep text-paper font-medium tracking-wide py-3 rounded-md hover:bg-sea-blue transition-colors disabled:opacity-40"
           >
-            {submitting ? "Posting…" : "Post it!"}
+            {submitting ? "Posting…" : "Post it"}
           </button>
         </form>
       </main>

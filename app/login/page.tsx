@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Bubbles from "@/components/Bubbles";
+import Wash from "@/components/Wash";
 
 export default function LoginPage() {
   const [password, setPassword] = useState("");
@@ -37,17 +37,19 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex-1 relative flex items-center justify-center px-5 py-16">
-      <Bubbles />
+    <div className="flex-1 relative flex items-center justify-center px-6 py-16">
+      <Wash />
 
       <form
         onSubmit={handleSubmit}
-        className="animate-pop-in w-full max-w-sm bg-white rounded-3xl shadow-[0_12px_32px_-8px_rgba(15,61,58,0.3)] border-4 border-white p-8 text-center"
+        className="animate-fade-up w-full max-w-sm bg-paper rounded-lg border border-sea-green/15 shadow-[0_1px_3px_rgba(20,47,61,0.08)] p-10 text-center"
       >
-        <div className="text-5xl mb-2">📸</div>
-        <h1 className="display text-3xl text-turquoise-dark">Hey, Dad!</h1>
-        <p className="text-teal-ink/60 font-semibold mt-1 mb-6">
-          Enter your password to upload photos.
+        <p className="text-[11px] tracking-[0.22em] uppercase text-sea-green font-medium mb-3">
+          Welcome back
+        </p>
+        <h1 className="display italic text-3xl text-sea-blue-deep">Dad&apos;s Login</h1>
+        <p className="text-ink/50 font-medium mt-2 mb-7 text-sm">
+          Enter your password to post a photo.
         </p>
 
         <input
@@ -56,19 +58,19 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
           autoFocus
-          className="w-full text-center bg-foam border-2 border-turquoise/20 rounded-2xl px-4 py-3 font-bold text-teal-ink placeholder:text-teal-ink/30 focus:outline-none focus:border-turquoise transition-colors"
+          className="w-full text-center bg-ivory border border-sea-green/20 rounded-md px-4 py-3 font-medium text-ink placeholder:text-ink/30 focus:outline-none focus:border-sea-green transition-colors"
         />
 
         {error && (
-          <p className="text-coral font-bold text-sm mt-3">{error}</p>
+          <p className="text-[13px] text-sea-blue-deep font-medium mt-3">{error}</p>
         )}
 
         <button
           type="submit"
           disabled={loading || !password}
-          className="hover-wiggle mt-5 w-full bg-turquoise text-white font-bold py-3 rounded-2xl shadow-md disabled:opacity-50 transition-opacity"
+          className="mt-6 w-full bg-sea-blue-deep text-paper font-medium tracking-wide py-3 rounded-md hover:bg-sea-blue transition-colors disabled:opacity-40"
         >
-          {loading ? "Checking…" : "Let me in"}
+          {loading ? "Checking…" : "Enter"}
         </button>
       </form>
     </div>
