@@ -28,29 +28,20 @@ live in [Supabase](https://supabase.com) (free tier is plenty for this).
 3. Go to **Project Settings → API**. You'll need three values in the next
    step:
    - `Project URL`
-https://ekeiqocbxibrdfyixbyq.supabase.co/rest/v1/
-
-   - `anon` `public` key - 
-   
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrZWlxb2NieGlicmRmeWl4YnlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5OTcyMzIsImV4cCI6MjA5ODU3MzIzMn0.2RxqD7XcdMElE0cr-XkUoxrmjSY--sy_Qf9WFV0ZIa4
+   - `anon` `public` key
    - `service_role` key (click "reveal" — keep this one secret, never put
-     it in client-side code) - 
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrZWlxb2NieGlicmRmeWl4YnlxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4Mjk5NzIzMiwiZXhwIjoyMDk4NTczMjMyfQ.YNtVdKaKd5vI3m3jZC-ZTHorP9MjI9SIti3TxYo-Tnw
+     it in client-side code)
 
 ## 2. Set up environment variables
 
 Copy `.env.example` to `.env.local` and fill it in:
 
 ```
-NEXT_PUBLIC_SUPABASE_URL=https://ekeiqocbxibrdfyixbyq.supabase.co/rest/v1/
-
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrZWlxb2NieGlicmRmeWl4YnlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5OTcyMzIsImV4cCI6MjA5ODU3MzIzMn0.2RxqD7XcdMElE0cr-XkUoxrmjSY--sy_Qf9WFV0ZIa4
-
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrZWlxb2NieGlicmRmeWl4YnlxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4Mjk5NzIzMiwiZXhwIjoyMDk4NTczMjMyfQ.YNtVdKaKd5vI3m3jZC-ZTHorP9MjI9SIti3TxYo-Tnw
-
-DAD_PASSWORD=jaya2611
-
-SESSION_SECRET=86a252ec6227c7145e38eb4450597d4b8726b2dd7e14e69f4fdd2dc41687515a
+NEXT_PUBLIC_SUPABASE_URL=      # Project URL from step 1
+NEXT_PUBLIC_SUPABASE_ANON_KEY= # anon public key from step 1
+SUPABASE_SERVICE_ROLE_KEY=     # service_role key from step 1
+DAD_PASSWORD=                  # whatever password Dad will type to log in
+SESSION_SECRET=                # random string — generate with: openssl rand -hex 32
 ```
 
 ## 3. Run it locally (optional, to try it before deploying)
@@ -72,7 +63,7 @@ The easiest path is through GitHub:
    git init
    git add .
    git commit -m "Dad's feed"
-   git remote add origin https://github.com/boi-oof/dad-feed.git
+   git remote add origin <your-repo-url>
    git push -u origin main
    ```
 2. Go to [vercel.com/new](https://vercel.com/new), import that repo.

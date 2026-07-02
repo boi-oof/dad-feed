@@ -34,26 +34,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Not logged in." }, { status: 401 });
   }
 
-  const formData = await request.formData().catch(() => null);
-
-  let caption = "";
-  let tags: string[] = [];
-  let path = "";
-
-  if (formData) {
-    // Backwards-compatible: not used anymore by the current upload page,
-    // but harmless to keep.
-    caption = (formData.get("caption") as string) || "";
-    const tagsRaw = (formData.get("tags") as string) || "";
-    tags = tagsRaw.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean);
-  } else {
-    const body = await request.json();
-    caption = body.caption || "";
-    tags = (body.tags || [])
-      .map((t: string) => t.trim().toLowerCase())
-      .filter(Boolean);
-    path = body.path;
-  }
+  const body = await request.json();
+  const caption = body.caption || "";
+  const tags = (body.tags || [])
+    .map((t: string) => t.trim().toLowerCase())
+    .filter(Boolean);
+  const path = body.path;
 
   if (!path) {
     return NextResponse.json({ error: "No photo attached." }, { status: 400 });
