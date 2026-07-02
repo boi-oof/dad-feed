@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { getServiceClient, getPublicClient } from "@/lib/supabase";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
 
@@ -26,9 +27,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const cookieHeader = request.headers.get("cookie") || "";
-  const match = cookieHeader.match(new RegExp(`${SESSION_COOKIE}=([^;]+)`));
-  const token = match?.[1];
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE)?.value;
 
   if (!(await verifySessionToken(token))) {
     return NextResponse.json({ error: "Not logged in." }, { status: 401 });
