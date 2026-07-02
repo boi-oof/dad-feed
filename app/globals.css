@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-display: var(--font-fredoka);
+  --font-body: var(--font-nunito);
+
+  --color-foam: #eafffb;
+  --color-turquoise: #14b8ae;
+  --color-turquoise-dark: #0a7d76;
+  --color-teal-ink: #0f3d3a;
+  --color-coral: #ff6b8b;
+  --color-sunshine: #ffc857;
+}
+
+:root {
+  --background: var(--color-foam);
+  --foreground: var(--color-teal-ink);
+}
+
+body {
+  background: radial-gradient(circle at 15% 0%, #d9fff8 0%, var(--color-foam) 45%, #c9f7ee 100%);
+  color: var(--foreground);
+  font-family: var(--font-body), sans-serif;
+  min-height: 100dvh;
+}
+
+h1, h2, h3, .display {
+  font-family: var(--font-display), sans-serif;
+}
+
+@keyframes pop-in {
+  0% { opacity: 0; transform: scale(0.85) translateY(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.animate-pop-in {
+  animation: pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes float-up {
+  0% { transform: translateY(0) translateX(0); opacity: 0.35; }
+  50% { transform: translateY(-18px) translateX(6px); opacity: 0.6; }
+  100% { transform: translateY(0) translateX(0); opacity: 0.35; }
+}
+.animate-float {
+  animation: float-up 6s ease-in-out infinite;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+.hover-wiggle:hover {
+  animation: wiggle 0.4s ease-in-out;
+}
+
+.stamp-edge {
+  -webkit-mask-image: radial-gradient(circle 3px at 6px 6px, transparent 3px, black 3.5px);
+  -webkit-mask-size: 12px 12px;
+  -webkit-mask-repeat: round;
+  mask-image: radial-gradient(circle 3px at 6px 6px, transparent 3px, black 3.5px);
+  mask-size: 12px 12px;
+  mask-repeat: round;
+}
+
+::selection {
+  background: var(--color-coral);
+  color: white;
+}
